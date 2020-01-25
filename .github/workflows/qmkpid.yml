@@ -16,12 +16,8 @@ jobs:
     - name: Get keyboard config
       if: github.event.pull_request.merged
       run: |
-        if keyboard_config=$(git diff-tree --no-commit-id -m --name-only -r ${{ github.sha }}) | grep config.h | grep keymaps; then
-          pids_json=".github/workflows/qmkpid/pids.json"
-          .github/workflows/qmkpid/pid.py
-        else
-          echo "No keyboards added"
-
+        pids_json=".github/workflows/qmkpid/pids.json"
+        ((keyboard_config=$(git diff-tree --no-commit-id -m --name-only -r ${{ github.sha }}) | grep config.h | grep -v keymaps) && .github/workflows/qmkpid/pid.py) || echo "No keyboards added"
 
     - name: Generate PID
       run: echo "todo, break the stuff into these steps"
