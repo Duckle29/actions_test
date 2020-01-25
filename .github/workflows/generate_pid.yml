@@ -13,8 +13,13 @@ jobs:
     - name: Check out
       uses: actions/checkout@v1
     
-    - name: Get list of files
+    - name: Get keyboard config
       if: github.event.pull_request.merged
       run: |
-        FILES=$(git diff-tree --no-commit-id -m --name-only -r ${{ github.sha }})
-        echo $FILES
+        CONFIG=$(git diff-tree --no-commit-id -m --name-only -r ${{ github.sha }}) | grep config.h | grep -v keymaps
+        echo "::set-env name=keyboard_config::$CONFIG"
+        echo "::set-env name=pids_json::.github/workflows/qmkpid/pids.json"
+
+    - name: Generate PID
+      run: .github/workflows/qmkpid/pid.py
+
