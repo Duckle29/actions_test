@@ -16,12 +16,12 @@ jobs:
     - name: Get keyboard config
       if: github.event.pull_request.merged
       run: |
-        CONFIG=$(git diff-tree --no-commit-id -m --name-only -r ${{ github.sha }}) | grep config.h | grep -v keymaps
-        echo "::set-env name=keyboard_config::$CONFIG"
-        echo "::set-env name=pids_json::.github/workflows/qmkpid/pids.json"
+        keyboard_config=$(git diff-tree --no-commit-id -m --name-only -r ${{ github.sha }}) | grep config.h | grep -v keymaps
+        pids_json=".github/workflows/qmkpid/pids.json"
+        .github/workflows/qmkpid/pid.py
 
     - name: Generate PID
-      run: .github/workflows/qmkpid/pid.py
+      run: echo "todo, break the stuff into these steps"
 
     - name: Commit tag generated PID to master
       run: echo "todo"
