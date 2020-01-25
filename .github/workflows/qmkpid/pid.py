@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
+import os
+import fileinput
+import tempfile
+from pathlib import Path
+
 import re
 import hashlib
 import json
-from pathlib import Path
-import tempfile
-from os import replace, environ
-import fileinput
 
 QMK_VID = 0x03A8
 
@@ -52,8 +53,8 @@ def calculate_pid(config_path, data, offset=0, max_tries=3):
 
 def init():
     # Check if json file exists
-    if not Path(environ['PIDS_JSON_PATH']).is_file():
-        with open(environ['PIDS_JSON_PATH'], 'w') as jfile:
+    if not Path(os.environ['PIDS_JSON_PATH']).is_file():
+        with open(os.environ['PIDS_JSON_PATH'], 'w') as jfile:
             json.dump({"pids": {}}, jfile)
 
 
@@ -64,18 +65,18 @@ def atomic_dump(data, json_file):
     with tempfile.NamedTemporaryFile(
             'w', dir=Path(json_file).parents[0], delete=False) as tf:
         json.dump(data, tf)
-    replace(tf.name, json_file)
+    os.replace(tf.name, json_file)
 
 
-VID, PID = get_vid_pid(environ['KEYBOARD_CONFIG_PATH'])
+VID, PID = get_vid_pid(os.environ['KEYBOARD_CONFIG_PATH'])
 if int(VID.group(1), 16) != QMK_VID:
 
     print("Keyboard does not use QMK VID (0x{:04X} != 0x{:04X})".format(int(VID.group(1), 16), QMK_VID))
     exit(0)
 else:
-    with open(environ['PIDS_JSON_PATH'], 'r') as json_file:
+    with open(os.environ['PIDS_JSON_PATH'], 'r') as json_file:
         data = json.load(json_file)
-        path = str(Path(environ['KEYBOARD_CONFIG_PATH']).parents[0])
+        path = str(Path(os.environ['KEYBOARD_CONFIG_PATH']).parents[0])
 
         if path in data['pids'].values():
             print("Keyboard already assigned a PID")
@@ -88,10 +89,10 @@ else:
                 exit(1)
                 
             print("Assigned PID {}".format(pid))
-            for line in fileinput.input(environ['KEYBOARD_CONFIG_PATH'], inplace=True):
-                print(line.replace(PID.group(0), "{}{}".format(PID.group(0)[:-4], pid, 1)), end='')
+            for line in fileinput.input(os.environ['KEYBOARD_CONFIG_PATH'], inplace=True):
+                print(line.replace(PID.group(0), "{}{}".format(PID.group(0)[:-4], pid)), end='')
 
         data["pids"][pid] = path
-    atomic_dump(data, environ['PIDS_JSON_PATH'])
+    atomic_dump(data, os.environ['PIDS_JSON_PATH'])
 
 

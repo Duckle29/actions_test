@@ -17,7 +17,7 @@ jobs:
       if: github.event.pull_request.merged
       run: |
         PIDS_JSON_PATH=".$HOME/.github/workflows/qmkpid/pids.json"
-        KEYBOARD_CONFIG_PATH=$(git diff-tree --no-commit-id -m --name-only -r ${{ github.sha }}) | grep config.h | grep -v keymaps && $HOME/.github/workflows/qmkpid/pid.py || echo "No keyboards added"
+        KEYBOARD_CONFIG_PATH=$(git diff-tree --no-commit-id -m --name-only -r ${{ github.sha }} | grep config.h | grep -v keymaps) && $HOME/.github/workflows/qmkpid/pid.py || echo "No keyboards added"
 
     - name: Generate PID
       run: echo "todo, break the stuff into these steps"
