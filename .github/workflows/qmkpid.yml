@@ -23,5 +23,14 @@ jobs:
       run: echo "todo, break the stuff into these steps"
 
     - name: Commit tag generated PID to master
-      run: echo "todo"
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git commit -m "Generated QMKPID" -a
+        git tag -a BOT:PID -m "Assigned PID for keyboard"
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
