@@ -23,3 +23,6 @@ jobs:
     - name: Generate PID
       run: .github/workflows/qmkpid/pid.py
 
+    - name: Commit tag generated PID to master
+      run: echo "todo"
+
