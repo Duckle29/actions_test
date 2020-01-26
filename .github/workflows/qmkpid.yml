@@ -25,16 +25,17 @@ jobs:
       run: |
         export KEYBOARD_CONFIG_PATH=${{ steps.get_config.outputs.config }}
         export PIDS_JSON_PATH=".github/workflows/qmkpid/pids.json"
-        python3 .github/workflows/qmkpid/pid.py
-        
+        OUTPUT=$(python3 .github/workflows/qmkpid/pid.py)
+        echo "##[set-output name=output;]"$OUTPUT
+        echo "##[set-output name=pid;]"$(echo $OUTPUT | tr -d '[:space:]' | tail -c 4)
 
     - name: Commit tag generated PID to master
-      if: success()
+      if: contains(${{ steps.generate_qmkpid.output }}, 'Assigned PID')
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -m "Generated QMKPID" -a
-        git tag -a BOTPID -m "Assigned PID for keyboard"
+        git tag -a BOTPID_${{ steps.generate_qmkpid.pid }} -m "Assigned QMKPID {{ steps.generate_qmkpid.pid }} for keyboard"
 
     - name: Push changes
       uses: ad-m/github-push-action@master
