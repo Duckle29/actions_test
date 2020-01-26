@@ -15,19 +15,26 @@ jobs:
     
     - name: Get keyboard config
       if: github.event.pull_request.merged
+      id: get_config
       run: |
-        export PIDS_JSON_PATH=".github/workflows/qmkpid/pids.json"
-        export KEYBOARD_CONFIG_PATH=$(git diff-tree --no-commit-id -m --name-only -r ${{ github.sha }} | grep config.h | grep -v keymaps) && python3 .github/workflows/qmkpid/pid.py || echo "No keyboards added"
+        echo "##[set-output name=config;]$(git diff-tree --no-commit-id -m --name-only -r ${{ github.sha }} | grep config.h | grep -v keymaps) || echo "No keyboards added"
 
-    - name: Generate PID
-      run: echo "todo, break the stuff into these steps"
+    - name: Generate QMKPID
+      if: steps.get_config.outputs.config != "No keyboards added"
+      id: generate_qmkpid
+      run: |
+        export KEYBOARD_CONFIG_PATH=${{ steps.get_config.outputs.config }}
+        export PIDS_JSON_PATH=".github/workflows/qmkpid/pids.json"
+        python3 .github/workflows/qmkpid/pid.py
+        
 
     - name: Commit tag generated PID to master
+      if: success()
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -m "Generated QMKPID" -a
-        git tag -a BOT:PID -m "Assigned PID for keyboard"
+        git tag -a BOTPID -m "Assigned PID for keyboard"
 
     - name: Push changes
       uses: ad-m/github-push-action@master
