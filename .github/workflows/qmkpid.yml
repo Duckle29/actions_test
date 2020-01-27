@@ -17,10 +17,10 @@ jobs:
       if: github.event.pull_request.merged
       id: get_config
       run: |
-        echo "##[set-output name=config;]$(git diff-tree --no-commit-id -m --name-only -r ${{ github.sha }} | grep config.h | grep -v keymaps) || echo "No keyboards added"
+        echo "##[set-output name=config;]$(git diff-tree --no-commit-id -m --name-only -r ${{ github.sha }} | grep config.h | grep -v keymaps) || echo 'No keyboards adde'"
 
     - name: Generate QMKPID
-      if: steps.get_config.outputs.config != "No keyboards added"
+      if: steps.get_config.outputs.config != 'No keyboards added'
       id: generate_qmkpid
       run: |
         export KEYBOARD_CONFIG_PATH=${{ steps.get_config.outputs.config }}
