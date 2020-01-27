@@ -52,8 +52,9 @@ def calculate_pid(config_path, data, offset=0, max_tries=3):
 
 
 def init():
-    # Check if json file exists
+    # Check if json file exists. if not make it
     if not Path(os.environ['PIDS_JSON_PATH']).is_file():
+        Path(os.environ['PIDS_JSON_PATH']).parents[0].mkdir(parents=True)
         with open(os.environ['PIDS_JSON_PATH'], 'w') as jfile:
             json.dump({"pids": {}}, jfile)
 
