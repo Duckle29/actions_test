@@ -24,9 +24,8 @@ jobs:
       id: generate_qmkpid
       run: |
         export KEYBOARD_CONFIG_PATH=${{ steps.get_config.outputs.config }}
-        export PIDS_JSON_PATH=".github/workflows/qmkpid/pids.json"
+        export PIDS_JSON_PATH=".plumbing/qmkpid/pids.json"
         OUTPUT=$(python3 .github/workflows/qmkpid/pid.py)
-        echo $OUTPUT
         echo "##[set-output name=output;]$OUTPUT"
         echo "##[set-output name=pid;]$(echo $OUTPUT | tr -d '[:space:]' | tail -c 4)"
         git add $PIDS_JSON_PATH
@@ -38,7 +37,6 @@ jobs:
         git config --local user.name "QMK Action"
         git commit -am "Generated QMKPID 0x${{ steps.generate_qmkpid.outputs.pid }}"
         git tag -a BOTPID_0x${{ steps.generate_qmkpid.outputs.pid }} -m "Assigned QMKPID 0x${{ steps.generate_qmkpid.outputs.pid }} for keyboard"
-        git add 
 
     - name: Push changes
       if: startsWith(steps.generate_qmkpid.outputs.output, 'Assigned PID')
