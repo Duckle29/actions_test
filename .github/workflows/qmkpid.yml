@@ -32,7 +32,7 @@ jobs:
 
     - name: Commit tag generated PID to master
       run: |
-        echo ${{ steps.generate_qmkpid.output }}
+        echo "O:"${{ steps.generate_qmkpid.output }}
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -m "Generated QMKPID" -a
