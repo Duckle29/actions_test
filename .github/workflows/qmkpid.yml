@@ -35,7 +35,7 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git commit -am "Generated QMKPID"
+        git commit -am "Generated QMKPID 0x${{ steps.generate_qmkpid.outputs.pid }}"
         git tag -a BOTPID_0x${{ steps.generate_qmkpid.outputs.pid }} -m "Assigned QMKPID 0x${{ steps.generate_qmkpid.outputs.pid }} for keyboard"
 
     - name: Push changes
