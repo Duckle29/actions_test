@@ -31,15 +31,15 @@ jobs:
         echo "##[set-output name=pid;]"$(echo $OUTPUT | tr -d '[:space:]' | tail -c 4)
 
     - name: Commit tag generated PID to master
-      if: contains(steps.generate_qmkpid.output, 'Assigned PID')
       run: |
+        echo ${{ steps.generate_qmkpid.output }}
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -m "Generated QMKPID" -a
         git tag -a BOTPID_${{ steps.generate_qmkpid.pid }} -m "Assigned QMKPID ${{ steps.generate_qmkpid.pid }} for keyboard"
 
     - name: Push changes
-      if: success()
+      if: 1 == 0
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
