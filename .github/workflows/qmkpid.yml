@@ -39,7 +39,7 @@ jobs:
         git tag -a BOTPID_0x${{ steps.generate_qmkpid.outputs.pid }} -m "Assigned QMKPID 0x${{ steps.generate_qmkpid.outputs.pid }} for keyboard"
 
     - name: Push changes
-      if: 1 == 0 && startsWith(steps.generate_qmkpid.outputs.output, 'Assigned PID')
+      if: startsWith(steps.generate_qmkpid.outputs.output, 'Assigned PID')
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
