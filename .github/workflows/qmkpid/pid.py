@@ -88,7 +88,7 @@ else:
                 print("Too many PID collisions ({}). Aborting".format(e))
                 exit(1)
                 
-            print("Assigned PID {}".format(pid))
+            print("Assigned PID 0x{}".format(pid))
             for line in fileinput.input(os.environ['KEYBOARD_CONFIG_PATH'], inplace=True):
                 print(line.replace(PID.group(0), "{}{}".format(PID.group(0)[:-4], pid)), end='')
 
