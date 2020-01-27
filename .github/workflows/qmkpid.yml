@@ -27,8 +27,8 @@ jobs:
         export PIDS_JSON_PATH=".github/workflows/qmkpid/pids.json"
         OUTPUT=$(python3 .github/workflows/qmkpid/pid.py)
         echo $OUTPUT
-        echo "##[set-output name=output;]"$OUTPUT
-        echo "##[set-output name=pid;]"$(echo $OUTPUT | tr -d '[:space:]' | tail -c 4)
+        echo "##[set-output name=output;]$OUTPUT"
+        echo "##[set-output name=pid;]$(echo $OUTPUT | tr -d '[:space:]' | tail -c 4)"
 
     - name: Commit tag generated PID to master
       run: |
